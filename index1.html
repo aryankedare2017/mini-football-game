@@ -9,13 +9,17 @@
     text-align: center;
     background: #4CAF50;
     font-family: sans-serif;
+    margin: 0;
+    padding: 0;
   }
 
   #gameField {
     position: relative;
     margin: 20px auto;
     width: 400px;
+    max-width: 95vw;   /* Shrink on small screens */
     height: 600px;
+    max-height: 80vh;  /* Fit phone screens */
     background: #228B22;
     border: 3px solid black;
     overflow: hidden;
@@ -65,12 +69,13 @@
     flex-wrap: wrap;
     margin-top: 10px;
     gap: 5px;
+    max-width: 95vw;   /* fit screen width */
   }
 
   .control-btn {
     width: 60px;
     height: 60px;
-    font-size: 20px;
+    font-size: 24px;
     background: #333;
     color: white;
     border: none;
@@ -157,7 +162,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === " " && !ballMoving) ballMoving = true;
 });
 
-// Controls for mobile
+// Controls for mobile (touch)
 document.getElementById("leftBtn").addEventListener("touchstart", ()=> movePlayer(-10,0));
 document.getElementById("rightBtn").addEventListener("touchstart", ()=> movePlayer(10,0));
 document.getElementById("upBtn").addEventListener("touchstart", ()=> movePlayer(0,10));
@@ -229,7 +234,6 @@ setInterval(()=>{
 
 // Start game
 gameLoop();
-
 </script>
 </body>
 </html>
