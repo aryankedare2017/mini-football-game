@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Arcade Football</title>
+
+<style>
+  body {
+    text-align: center;
+    background: #4CAF50;
+    font-family: sans-serif;
+  }
+
+  #gameField {
+    position: relative;
+    margin: 20px auto;
+    width: 400px;
+    height: 600px;
+    background: #228B22;
+    border: 3px solid black;
+    overflow: hidden;
+  }
+
+  #player {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: blue;
+  }
+
+  #ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+  }
+
+  #goal {
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    background: yellow;
+    top: 0;
+    left: 150px;
+  }
+
+  .defender {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: red;
+  }
+
+  #scoreBoard, #timerBoard, #levelBoard {
+    font-size: 18px;
+    margin: 5px;
+  }
+</style>
+</head>
+
+<body>
+
+<h2>Mini Football Game ⚽</h2>
+
+<div id="scoreBoard">Score: 0</div>
+<div id="timerBoard">Time: 30</div>
+<div id="levelBoard">Level: 1</div>
+
+<div id="gameField">
+  <div id="goal"></div>
+  <div id="player"></div>
+  <div id="ball"></div>
+</div>
+
+<script>
+
+// Elements
+const player = document.getElementById("player");
+const ball = document.getElementById("ball");
+const gameField = document.getElementById("gameField");
+const scoreBoard = document.getElementById("scoreBoard");
+const timerBoard = document.getElementById("timerBoard");
+const levelBoard = document.getElementById("levelBoard");
+
+// Game variables
+let score = 0;
+let level = 1;
+let timeLeft = 30;
+
+let playerPos = { x: 180, y: 20 };
+let ballPos = { x: 190, y: 70 };
+let ballMoving = false;
+
+let defenders = [];
+
+// Create defenders
+function createDefenders() {
+  defenders.forEach(d => gameField.removeChild(d.element));
+  defenders = [];
+
+  for (let i = 0; i < level + 1; i++) {
+    const d = document.createElement("div");
+    d.className = "defender";
+    d.style.top = Math.random() * 200 + "px";
+    d.style.left = Math.random() * 360 + "px";
+    gameField.appendChild(d);
+
+    defenders.push({
+      element: d,
+      dir: Math.random() > 0.5 ? 1 : -1
+    });
+  }
+}
+
+createDefenders();
+
+// Controls
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") playerPos.x -= 10;
+  if (e.key === "ArrowRight") playerPos.x += 10;
+  if (e.key === "ArrowUp") playerPos.y += 10;
+  if (e.key === "ArrowDown") playerPos.y -= 10;
+
+  if (e.key === " " && !ballMoving) {
+    ballMoving = true;
+  }
+
+  // Boundaries
+  playerPos.x = Math.max(0, Math.min(360, playerPos.x));
+  playerPos.y = Math.max(0, Math.min(560, playerPos.y));
+
+  if (!ballMoving) {
+    ballPos.x = playerPos.x + 10;
+    ballPos.y = playerPos.y + 50;
+  }
+});
+
+// Main Game Loop
+function gameLoop() {
+
+  // Move ball
+  if (ballMoving) {
+    ballPos.y += 8;
+
+    // Goal detection
+    if (
+      ballPos.y >= 580 &&
+      ballPos.x >= 150 &&
+      ballPos.x <= 250
+    ) {
+      score++;
+      resetBall();
+    }
+
+    // Miss
+    if (ballPos.y > 600) {
+      resetBall();
+    }
+  }
+
+  // Move defenders
+  defenders.forEach(d => {
+    let left = parseFloat(d.element.style.left);
+    left += d.dir * (2 + level);
+
+    if (left < 0 || left > 360) d.dir *= -1;
+
+    d.element.style.left = left + "px";
+
+    // Collision with ball
+   let defTop = parseFloat(d.element.style.top);
+let defLeft = left;
+
+// Convert ball bottom to top-based position
+let ballTop = 600 - ballPos.y - 20;
+
+if (
+  ballPos.x < defLeft + 40 &&
+  ballPos.x + 20 > defLeft &&
+  ballTop < defTop + 40 &&
+  ballTop + 20 > defTop
+) {
+  resetBall();
+}
+  });
+
+  updateUI();
+  requestAnimationFrame(gameLoop);
+}
+
+// Reset ball
+function resetBall() {
+  ballMoving = false;
+  ballPos.x = playerPos.x + 10;
+  ballPos.y = playerPos.y + 50;
+}
+
+// Update UI
+function updateUI() {
+  player.style.left = playerPos.x + "px";
+  player.style.bottom = playerPos.y + "px";
+
+  ball.style.left = ballPos.x + "px";
+  ball.style.bottom = ballPos.y + "px";
+
+  scoreBoard.textContent = "Score: " + score;
+}
+
+// Timer
+setInterval(() => {
+  timeLeft--;
+  timerBoard.textContent = "Time: " + timeLeft;
+
+  if (timeLeft <= 0) {
+    level++;
+    levelBoard.textContent = "Level: " + level;
+    timeLeft = 30;
+    createDefenders();
+  }
+}, 1000);
+
+// Start game
+gameLoop();
+
+</script>
+
+</body>
+</html>
