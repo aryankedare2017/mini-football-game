@@ -17,9 +17,9 @@
     position: relative;
     margin: 20px auto;
     width: 400px;
-    max-width: 95vw;   /* Shrink on small screens */
+    max-width: 95vw;
     height: 600px;
-    max-height: 80vh;  /* Fit phone screens */
+    max-height: 80vh;
     background: #228B22;
     border: 3px solid black;
     overflow: hidden;
@@ -62,14 +62,17 @@
     margin: 5px;
   }
 
-  /* Mobile buttons */
+  /* Mobile buttons inside game field */
   .mobile-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top: 10px;
     gap: 5px;
-    max-width: 95vw;   /* fit screen width */
+    width: 95%;
   }
 
   .control-btn {
@@ -81,6 +84,7 @@
     border: none;
     border-radius: 10px;
     user-select: none;
+    touch-action: manipulation;
   }
 </style>
 </head>
@@ -96,15 +100,15 @@
   <div id="goal"></div>
   <div id="player"></div>
   <div id="ball"></div>
-</div>
 
-<!-- Mobile buttons -->
-<div class="mobile-controls">
-  <button class="control-btn" id="leftBtn">⬅️</button>
-  <button class="control-btn" id="upBtn">⬆️</button>
-  <button class="control-btn" id="downBtn">⬇️</button>
-  <button class="control-btn" id="rightBtn">➡️</button>
-  <button class="control-btn" id="shootBtn">🔴</button>
+  <!-- Mobile buttons -->
+  <div class="mobile-controls">
+    <button class="control-btn" id="leftBtn">⬅️</button>
+    <button class="control-btn" id="upBtn">⬆️</button>
+    <button class="control-btn" id="downBtn">⬇️</button>
+    <button class="control-btn" id="rightBtn">➡️</button>
+    <button class="control-btn" id="shootBtn">🔴</button>
+  </div>
 </div>
 
 <script>
